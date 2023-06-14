@@ -4,22 +4,22 @@ using UnityEngine;
 
 public class Deck : GameManager
 {
-    public GameObject[] cards = new GameObject[14];
-    private List<GameObject> deck = new List<GameObject>();
-    private int x = 0;
-    private int y = 54;
+    public GameObject[] cards = new GameObject[14];       // Card prefabs
+    private List<GameObject> deck = new List<GameObject>();   // Virtual Deck
+    private int y = 54;       // Number of cards in deck
 
-    public Transform[] playerCards = new Transform[4];
-    public Transform[] opponentCards = new Transform[4];
+    public Transform[] playerCards = new Transform[4];   // Player's card holders
+    public Transform[] opponentCards = new Transform[4];  // Opponent's card holders
 
-    public GameManager gm;
-    public GameObject player;
+    public GameManager gm;  // The GameManager
+    public GameObject player;    // The PlayerController
 
     void Start()
     {
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         if(gm.phase == TurnPhase.Start)
         {
-            gm.SendMessageToLog("Starting game...");
+            SendMessageToLog("Starting game...");       // Send message to log and start the game
             StartCoroutine(AddToDeck());
         }
         
@@ -58,7 +58,8 @@ public class Deck : GameManager
 
     List<GameObject> Shuffle()
     {
-        gm.SendMessageToLog("Shuffling..");
+        SendMessageToLog("Shuffling..");
+        int x = 0;
         List<GameObject> temp = new List<GameObject>();
         y = 54;
         for (int i = 0; i < 54; i++)
@@ -73,7 +74,7 @@ public class Deck : GameManager
     
     IEnumerator DealPlayers()
     {
-        gm.SendMessageToLog("Dealing cards..");
+        SendMessageToLog("Dealing cards..");
         bool dealPlayer = true;
         int x = 0;
         for(int i=0;i<8;i++)
@@ -83,7 +84,8 @@ public class Deck : GameManager
                 deck[i].SetActive(true);
                 deck[i].transform.position = transform.position;
                 deck[i].transform.parent = playerCards[x];
-                StartCoroutine(deck[i].gameObject.GetComponent<Card>().MoveTo(playerCards[x].transform));
+                StartCoroutine(deck[i].gameObject.GetComponent<Card>().MoveTo(playerCards[x].transform.position));
+                deck[i].gameObject.GetComponent<Card>().inPlayerHand = true;
                 dealPlayer = false;
             }
             else if(!dealPlayer)
@@ -91,20 +93,33 @@ public class Deck : GameManager
                 deck[i].SetActive(true);
                 deck[i].transform.position = transform.position;
                 deck[i].transform.parent = opponentCards[x];
-                StartCoroutine(deck[i].gameObject.GetComponent<Card>().MoveTo(opponentCards[x].transform));
+                StartCoroutine(deck[i].gameObject.GetComponent<Card>().MoveTo(opponentCards[x].transform.position));
+                deck[i].gameObject.GetComponent<Card>().inOpponentHand = true;
                 dealPlayer = true;
                 x++;
             }
-            deck[i].gameObject.GetComponent<Card>().inHand= true;
+            deck.RemoveAt(i);
             yield return new WaitForSeconds(0.2f);
         }
 
         yield return new WaitForSeconds(0.5f);
-        gm.phase = TurnPhase.PlayerTurn;
-        gm.SendMessageToLog("Player Turn");
-        //player.SetActive(true);
+        gm.phase = TurnPhase.PlayerFirstTurn;
+        SendMessageToLog("Player Turn");       
 
     }    // Deal each player a card at a time until each has 4.
 
-
+    private void OnMouseDown()
+    {
+        if(gm.phase == TurnPhase.PlayerTurn)
+        {
+            DrawCard();
+        }
+    }
+    public void DrawCard()
+    {
+        deck[0].SetActive(true);
+        deck[0].transform.position = transform.position;
+        StartCoroutine(deck[0].gameObject.GetComponent<Card>().MoveTo(transform.position+new Vector3(-5,0,0)));
+        gm.PreviewCard(deck[0].GetComponent<Card>().cardFace);
+    }
 }
