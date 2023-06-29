@@ -9,6 +9,7 @@ public class Card : MonoBehaviour
     public int cardNum;                       // The card's information
     public Sprite cardFace;
     public Sprite cardBack;
+    public int cardPosInHand;
 
     public bool inOpponentHand = false;        // The card current location
     public bool inPlayerHand = false;
@@ -45,40 +46,29 @@ public class Card : MonoBehaviour
     }  // Function to move a card from the current position to a target position. Can be called from anywhere at anytime.
 
     private void OnMouseDown()
-    {       
-        if (gm.phase == TurnPhase.PlayerFirstTurn && inPlayerHand)
-        {
-            if (gm.cardPreview.isActiveAndEnabled)
-            {
-                gm.HideCard();
-                player.canLook--;
-            }
-            else 
-            {
-                gm.PreviewCard(cardFace);
-            }
-        }
-        else if (gm.phase == TurnPhase.PlayerTurn)
-        {
-            PlayerActions();
-
-        }
-        else 
-            return;
-    }
-
-    private void PlayerActions() 
     {
         if (inOpponentHand)
             return;
 
         if (inPlayerHand)
         {
-            print("This is your turn now");          
+
+            switch (gm.phase)
+            {
+                case TurnPhase.PlayerFirstTurn: 
+                    gm.PreviewCard(this);
+                    break;
+
+                case TurnPhase.Switch:
+                    player.SwitchCards(cardPosInHand);
+                    break;
+            }
+           
         }
         
+    }
 
-    }               // Players actions, can be modified
+   
 
     private void FlipCard()
     {
