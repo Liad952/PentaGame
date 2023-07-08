@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class Card : MonoBehaviour
 {
@@ -31,8 +32,8 @@ public class Card : MonoBehaviour
 
     private void Update()
     {
-        FlipCard();            
-
+        FlipCard();
+        
     }
 
 
@@ -40,9 +41,10 @@ public class Card : MonoBehaviour
     {
         while (transform.position != target)
         {
-            transform.position = Vector2.MoveTowards(transform.position, target, spd);
+            transform.position = Vector2.MoveTowards(transform.position, target, dis);
             yield return new WaitForSeconds(0.1f);
         }
+        transform.position = target;
     }  // Function to move a card from the current position to a target position. Can be called from anywhere at anytime.
 
     private void OnMouseDown()
@@ -50,22 +52,22 @@ public class Card : MonoBehaviour
         if (inOpponentHand)
             return;
 
-        if (inPlayerHand)
+
+
+        switch (gm.phase)
         {
-
-            switch (gm.phase)
-            {
-                case TurnPhase.PlayerFirstTurn: 
-                    gm.PreviewCard(this);
-                    break;
-
-                case TurnPhase.Switch:
-                    player.SwitchCards(cardPosInHand);
-                    break;
-            }
-           
+            case TurnPhase.PlayerFirstTurn: 
+                gm.PreviewCard(this);
+                break;
+    
+            case TurnPhase.Switch:
+                player.SwitchCards(cardPosInHand);
+                break;
+            case TurnPhase.DrawDiscarded:
+                player.SwitchCards(cardPosInHand);
+                break;
         }
-        
+
     }
 
    
@@ -82,11 +84,11 @@ public class Card : MonoBehaviour
             gameObject.GetComponent<SpriteRenderer>().sprite = cardFace;
         }
 
-
-        if (inPlayerHand || inOpponentHand)
-            isVisable = false;
+        
         if (dicarded)
             isVisable = true;
+        else
+            isVisable = false;
     }                  // Function that checks if the card should be face up or down
 
 }

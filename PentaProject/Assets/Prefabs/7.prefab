@@ -101,13 +101,15 @@ MonoBehaviour:
   cardNum: 7
   cardFace: {fileID: 21300000, guid: f9f0c729c5ebdd64ba81e330f26b5627, type: 3}
   cardBack: {fileID: 21300000, guid: accdf917e9d30dc4cb13e5b688e4799f, type: 3}
+  cardPosInHand: 0
   inOpponentHand: 0
   inPlayerHand: 0
   dicarded: 0
   selected: 0
   spd: 3
-  dis: 0.6
+  dis: 1
   gm: {fileID: 0}
+  player: {fileID: 0}
 --- !u!61 &-635689963876956909
 BoxCollider2D:
   m_ObjectHideFlags: 0

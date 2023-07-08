@@ -5,7 +5,6 @@ using UnityEngine;
 public class Deck : GameManager
 {
     public GameObject[] cards = new GameObject[14];       // Card prefabs
-    public Transform discardPile;
     private List<GameObject> deck = new List<GameObject>();   // Virtual Deck
     private int y = 54;       // Number of cards in deck
 
@@ -14,7 +13,6 @@ public class Deck : GameManager
 
     public GameManager gm;  // The GameManager
     public GameObject player;    // The PlayerController
-    public GameObject opponent;
 
 
     void Start()
@@ -109,6 +107,7 @@ public class Deck : GameManager
         deck[0].transform.parent = discardPile;
         StartCoroutine(deck[0].gameObject.GetComponent<Card>().MoveTo(discardPile.position));
         deck[0].gameObject.GetComponent<Card>().dicarded = true;
+        discardPile.GetComponent<DiscardPile>().AddToPile(deck[0].GetComponent<Card>());
         deck.RemoveAt(0);
         yield return new WaitForSeconds(0.5f);
         gm.phase = TurnPhase.PlayerFirstTurn;
@@ -118,22 +117,26 @@ public class Deck : GameManager
 
     private void OnMouseDown()
     {
-        if(gm.phase == TurnPhase.PlayerTurn)
-        {
-            DrawCard(player.GetComponent<PlayerController>().drawnCard);           
-        }
-        if (gm.phase == TurnPhase.OpponentTurn)
-        {
-            DrawCard(this.opponent.transform);
-        }
+        
+
+        DrawCard(player.GetComponent<PlayerController>().drawnCardHolder.transform);
     }
     public void DrawCard(Transform player)
     {
+        switch (gm.phase)
+        {
+            case TurnPhase.PlayerTurn:
+                this.player.GetComponent<PlayerController>().drawnCard = deck[0].transform;
+                break;
+            case TurnPhase.OpponentTurn:
+                gm.opponent.GetComponent<OpponantAI>()._drawnCard = deck[0].transform;
+                break;
+        }
         deck[0].SetActive(true);
         deck[0].transform.position = transform.position;
         deck[0].transform.parent = player;
-        StartCoroutine(deck[0].gameObject.GetComponent<Card>().MoveTo(player.position));
+        //StartCoroutine(deck[0].gameObject.GetComponent<Card>().MoveTo(player.position));
         gm.PreviewCard(deck[0].GetComponent<Card>());
         gm.phase = TurnPhase.DrawNew;
-    }
+    }  // Not working properly
 }

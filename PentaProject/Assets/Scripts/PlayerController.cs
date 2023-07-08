@@ -9,16 +9,11 @@ public class PlayerController : MonoBehaviour
     public GameObject[] playerHand = new GameObject[4];
     private Card[] playerCards = new Card[4];
     public GameObject deck;
+    public GameObject drawnCardHolder;
     public Transform drawnCard;
     
     public int canLook = 2;
 
-
-    private void Start()
-    {
-        
-        
-    }
 
     private void Update()
     {
@@ -33,7 +28,7 @@ public class PlayerController : MonoBehaviour
         switch(gm.phase)
         {
             case TurnPhase.PlayerFirstTurn:
-                int x = 1;
+                int x = 0;
                 for (int i = 0; i < 4; i++)
                 {
                     playerCards[i] = playerHand[i].GetComponentInChildren<Card>();
@@ -41,7 +36,7 @@ public class PlayerController : MonoBehaviour
                     x++;
                 }
                 break;
-
+                       
         }
 
     }
@@ -49,10 +44,25 @@ public class PlayerController : MonoBehaviour
 
     public void SwitchCards(int cardPos)
     {
-        GameObject temp = playerCards[cardPos-1].gameObject;
-        drawnCard.GetComponentInChildren<GameObject>().transform.parent = playerHand[cardPos-1].transform;
-        temp.transform.parent = drawnCard;
-    }
+        Card cardToSwitch = playerCards[cardPos];
+        gm.SwitchParents(playerHand[cardPos].transform, drawnCardHolder.transform,
+            cardToSwitch.GetComponent<Transform>(), drawnCard);
+        drawnCard.GetComponent<Card>().cardPosInHand = cardPos;
+        drawnCard.GetComponent<Card>().inPlayerHand = true;
+        cardToSwitch.inPlayerHand = false;
+        gm.SendToDiscardPile(cardToSwitch.GetComponent<Transform>());
+        if(!drawnCard.gameObject.activeSelf)
+        {
+            drawnCard.gameObject.SetActive(true);
+        }
+        if (drawnCard.GetComponent<Card>().dicarded)
+        {
+            drawnCard.GetComponent<Card>().dicarded = false;
+        }
+
+        gm.phase = TurnPhase.OpponentTurn;
+        gm.PlayAiTurn();
+    }   //  Used to switch cards for the player.
 
 
 
