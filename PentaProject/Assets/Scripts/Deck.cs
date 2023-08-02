@@ -116,27 +116,29 @@ public class Deck : GameManager
     }    // Deal each player a card at a time until each has 4. Add a card to the discard pile.
 
     private void OnMouseDown()
-    {
-        
-
-        DrawCard(player.GetComponent<PlayerController>().drawnCardHolder.transform);
+    {        
+        DrawCard();
     }
-    public void DrawCard(Transform player)
+    public void DrawCard()
     {
+        GameObject player = null;
         switch (gm.phase)
         {
             case TurnPhase.PlayerTurn:
                 this.player.GetComponent<PlayerController>().drawnCard = deck[0].transform;
+                player = this.player.GetComponent<PlayerController>().drawnCardHolder;
                 break;
             case TurnPhase.OpponentTurn:
                 gm.opponent.GetComponent<OpponantAI>()._drawnCard = deck[0].transform;
+                player = gm.opponent.GetComponent<OpponantAI>().drawnCardHolder;
                 break;
         }
+        gm.phase = TurnPhase.DrawNew;
         deck[0].SetActive(true);
         deck[0].transform.position = transform.position;
-        deck[0].transform.parent = player;
-        //StartCoroutine(deck[0].gameObject.GetComponent<Card>().MoveTo(player.position));
+        deck[0].transform.parent = player.transform;
+        StartCoroutine(deck[0].gameObject.GetComponent<Card>().MoveTo(player.transform.position));
         gm.PreviewCard(deck[0].GetComponent<Card>());
-        gm.phase = TurnPhase.DrawNew;
+        deck.RemoveAt(0);
     }  // Not working properly
 }

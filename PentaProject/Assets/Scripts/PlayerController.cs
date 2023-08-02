@@ -49,7 +49,6 @@ public class PlayerController : MonoBehaviour
             cardToSwitch.GetComponent<Transform>(), drawnCard);
         drawnCard.GetComponent<Card>().cardPosInHand = cardPos;
         drawnCard.GetComponent<Card>().inPlayerHand = true;
-        cardToSwitch.inPlayerHand = false;
         gm.SendToDiscardPile(cardToSwitch.GetComponent<Transform>());
         if(!drawnCard.gameObject.activeSelf)
         {

@@ -76,18 +76,7 @@ public class GameManager : MonoBehaviour
                 drawnCard = card;
                 cardPreview.gameObject.SetActive(true);
                 cardPreview.sprite = card.cardFace;
-                break;
-
-            case TurnPhase.PlayerTurn:
-                if (cardPreview.isActiveAndEnabled)
-                {
-                    HideCard();                    
-                    return;
-                }
-                drawnCard = card;
-                cardPreview.gameObject.SetActive(true);
-                cardPreview.sprite = card.cardFace;
-                break;
+                break;            
 
             case TurnPhase.OpponentTurn:
                 if (oppCardPreview.isActiveAndEnabled)
@@ -100,6 +89,18 @@ public class GameManager : MonoBehaviour
                 oppCardPreview.sprite = card.cardFace;
                 buttons.SetActive(false);
                 break;
+
+            case TurnPhase.DrawNew:               
+                drawnCard = card;
+                cardPreview.gameObject.SetActive(true);
+                cardPreview.sprite = card.cardFace;
+                break;
+
+            case TurnPhase.DrawDiscarded:
+                drawnCard = card;
+                cardPreview.gameObject.SetActive(true);
+                cardPreview.sprite = card.cardFace;
+                break;
         }
         
         
@@ -107,21 +108,8 @@ public class GameManager : MonoBehaviour
 
     public void HideCard()
     {
-        switch (phase)
-        {
-            case TurnPhase.PlayerFirstTurn:
-                cardPreview.gameObject.SetActive(false);
-                break;
+        cardPreview.gameObject.SetActive(false);
 
-            case TurnPhase.PlayerTurn:
-                cardPreview.gameObject.SetActive(false);
-                break;
-
-            case TurnPhase.OpponentTurn:
-                oppCardPreview.gameObject.SetActive(false);
-                break;
-        }
-        
     } // Function to hide the card that was shown.
 
     public void SwitchCard()
@@ -146,10 +134,10 @@ public class GameManager : MonoBehaviour
     }
     public void SwitchParents(Transform parent1, Transform parent2, Transform child1, Transform child2)
     {
+        child1.SetParent(null); child2.SetParent(null);
         StartCoroutine(child1.GetComponent<Card>().MoveTo(parent2.position));
         child1.SetParent(parent2);
         StartCoroutine(child2.GetComponent<Card>().MoveTo(parent1.position)); 
-        child2.transform.position = parent1.position;
         child2.SetParent(parent1);
         
         HideCard();
@@ -160,6 +148,8 @@ public class GameManager : MonoBehaviour
         card.parent = discardPile;
         StartCoroutine(card.GetComponent<Card>().MoveTo(discardPile.position));
         card.GetComponent<Card>().dicarded = true;
+        card.GetComponent<Card>().inOpponentHand = false;
+        card.GetComponent<Card>().inPlayerHand = false;
         discardPile.GetComponent<DiscardPile>().AddToPile(card.GetComponent<Card>());
         HideCard();
     }  // General function to discard a card.

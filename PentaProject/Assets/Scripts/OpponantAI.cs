@@ -33,10 +33,15 @@ public class OpponantAI : GameManager
     public IEnumerator RandomPlay()
     {
         yield return new WaitForSeconds(2);
-        deck.DrawCard(this.transform);
+        deck.DrawCard();
+        Card cardToSwitch = oppCards[0];
         yield return new WaitForSeconds(2);
         gm.SwitchParents(oppHand[0].transform, drawnCardHolder.transform,
-            oppCards[0].GetComponent<Transform>(), _drawnCard);
+            cardToSwitch.GetComponent<Transform>(), _drawnCard);
+        _drawnCard.GetComponent<Card>().cardPosInHand = 0;
+        _drawnCard.GetComponent<Card>().inOpponentHand = true;
+        yield return new WaitForSeconds(2);
+        gm.SendToDiscardPile(cardToSwitch.transform);
         yield return new WaitForSeconds(2);
         gm.phase = TurnPhase.PlayerTurn;
         SendMessageToLog("Player's Turn");

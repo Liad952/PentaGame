@@ -38,13 +38,14 @@ public class DiscardPile : MonoBehaviour
 
     public void DrawCard(Transform player)
     {
+        gm.phase = TurnPhase.DrawDiscarded;
         discardedCards[discardedCards.Count-1].gameObject.SetActive(true);
         discardedCards[discardedCards.Count-1].transform.position = transform.position;
         discardedCards[discardedCards.Count-1].transform.parent = player;
         this.player.GetComponent<PlayerController>().drawnCard = discardedCards[discardedCards.Count-1].transform;
-        //StartCoroutine(discardedCards[discardedCards.Count-1].MoveTo(player.position));
+        StartCoroutine(discardedCards[discardedCards.Count-1].MoveTo(player.position));
         gm.PreviewCard(discardedCards[discardedCards.Count-1]);
-        gm.phase = TurnPhase.DrawDiscarded;
+        gm.SwitchCard();
     }  // Not working properly
 
 }

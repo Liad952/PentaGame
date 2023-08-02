@@ -107,7 +107,7 @@ MonoBehaviour:
   dicarded: 0
   selected: 0
   spd: 3
-  dis: 1
+  dis: 1.2
   gm: {fileID: 0}
   player: {fileID: 0}
 --- !u!61 &-6594817883079271703
