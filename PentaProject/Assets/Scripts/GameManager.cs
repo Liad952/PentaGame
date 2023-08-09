@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     public Image cardPreview;                                  // The object that holds the card to preview it to the player
     public Image oppCardPreview;
+    public Image playerCardPreview;
     public GameObject buttons;
     private Card drawnCard;
     public PlayerController playerCon;
@@ -26,19 +27,21 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         phase = TurnPhase.Start;
+        cardPreview = playerCardPreview;
     }
+
     private void Update()
     {
-        if(phase == TurnPhase.DrawNew)
+        switch(phase)
         {
-            buttons.SetActive(true);
-        }
-        else
-        {
-            buttons.SetActive(false);
-        }
+            case TurnPhase.PlayerTurn:
+                cardPreview = playerCardPreview;
+                break;
 
-
+            case TurnPhase.OpponentTurn:
+                cardPreview = oppCardPreview;
+                break;
+        }
     }
 
     public void SendMessageToLog(string message)
@@ -61,49 +64,21 @@ public class GameManager : MonoBehaviour
 
     public void PreviewCard(Card card)
     {
-        switch (phase)
+        if (cardPreview.isActiveAndEnabled)
         {
-            case TurnPhase.PlayerFirstTurn:
-                if (cardPreview.isActiveAndEnabled)
-                {
-                    HideCard();
-                    if (playerCon.canLook > 0)
-                    {
-                        playerCon.canLook--;
-                    }
-                    return;
-                }
-                drawnCard = card;
-                cardPreview.gameObject.SetActive(true);
-                cardPreview.sprite = card.cardFace;
-                break;            
-
-            case TurnPhase.OpponentTurn:
-                if (oppCardPreview.isActiveAndEnabled)
-                {
-                    oppCardPreview.gameObject.SetActive(false);
-                    return;
-                }
-                drawnCard = card;
-                oppCardPreview.gameObject.SetActive(true);
-                oppCardPreview.sprite = card.cardFace;
-                buttons.SetActive(false);
-                break;
-
-            case TurnPhase.DrawNew:               
-                drawnCard = card;
-                cardPreview.gameObject.SetActive(true);
-                cardPreview.sprite = card.cardFace;
-                break;
-
-            case TurnPhase.DrawDiscarded:
-                drawnCard = card;
-                cardPreview.gameObject.SetActive(true);
-                cardPreview.sprite = card.cardFace;
-                break;
+            HideCard();
+            if(phase== TurnPhase.PlayerFirstTurn)
+            {
+                playerCon.canLook--;
+            }
         }
-        
-        
+        else
+        {
+            drawnCard = card;
+            cardPreview.gameObject.SetActive(true);
+            cardPreview.sprite = card.cardFace;
+        }     
+
     } // Function to Show the card that was played.
 
     public void HideCard()
@@ -120,6 +95,7 @@ public class GameManager : MonoBehaviour
 
     public void Discard()
     {
+        buttons.SetActive(false);
         SendToDiscardPile(drawnCard.transform);
         phase = TurnPhase.OpponentTurn;
         SendMessageToLog("Opponent's Turn");
@@ -127,11 +103,13 @@ public class GameManager : MonoBehaviour
 
     public void UseCard()
     {
+        buttons.SetActive(false);
         SendToDiscardPile(drawnCard.transform);
         // add cards abilities.
         phase = TurnPhase.OpponentTurn;
         SendMessageToLog("Opponent's Turn");
     }
+
     public void SwitchParents(Transform parent1, Transform parent2, Transform child1, Transform child2)
     {
         child1.SetParent(null); child2.SetParent(null);

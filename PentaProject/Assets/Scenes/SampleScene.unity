@@ -660,6 +660,7 @@ MonoBehaviour:
   textObject: {fileID: 264329455881620236, guid: 2ddff6dda509b9a40866233cade011bf, type: 3}
   cardPreview: {fileID: 1571810520}
   oppCardPreview: {fileID: 0}
+  playerCardPreview: {fileID: 0}
   buttons: {fileID: 1548782168}
   playerCon: {fileID: 220560071}
   opponent: {fileID: 1347422381}
@@ -2139,7 +2140,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1401112112}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.5000002
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2217,6 +2218,7 @@ MonoBehaviour:
   textObject: {fileID: 264329455881620236, guid: 2ddff6dda509b9a40866233cade011bf, type: 3}
   cardPreview: {fileID: 0}
   oppCardPreview: {fileID: 0}
+  playerCardPreview: {fileID: 0}
   buttons: {fileID: 1548782168}
   playerCon: {fileID: 0}
   opponent: {fileID: 0}
@@ -2430,8 +2432,9 @@ MonoBehaviour:
   maxMessages: 25
   logPanel: {fileID: 492629731}
   textObject: {fileID: 264329455881620236, guid: 2ddff6dda509b9a40866233cade011bf, type: 3}
-  cardPreview: {fileID: 1571810520}
+  cardPreview: {fileID: 0}
   oppCardPreview: {fileID: 1634183461}
+  playerCardPreview: {fileID: 1571810520}
   buttons: {fileID: 1548782168}
   playerCon: {fileID: 220560071}
   opponent: {fileID: 1347422381}

@@ -127,6 +127,7 @@ public class Deck : GameManager
             case TurnPhase.PlayerTurn:
                 this.player.GetComponent<PlayerController>().drawnCard = deck[0].transform;
                 player = this.player.GetComponent<PlayerController>().drawnCardHolder;
+                gm.buttons.SetActive(true);
                 break;
             case TurnPhase.OpponentTurn:
                 gm.opponent.GetComponent<OpponantAI>()._drawnCard = deck[0].transform;
@@ -140,5 +141,5 @@ public class Deck : GameManager
         StartCoroutine(deck[0].gameObject.GetComponent<Card>().MoveTo(player.transform.position));
         gm.PreviewCard(deck[0].GetComponent<Card>());
         deck.RemoveAt(0);
-    }  // Not working properly
+    }  // Draw the next card from the deck.
 }

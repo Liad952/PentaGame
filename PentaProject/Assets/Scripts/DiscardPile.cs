@@ -16,7 +16,7 @@ public class DiscardPile : MonoBehaviour
         discardedCards.Add(card);
         lastCard.GetComponent<SpriteRenderer>().sprite = card.cardFace;
         FixPile();
-    }
+    }  // Add card to discard pile list.
 
     private void FixPile()
     {
@@ -24,7 +24,7 @@ public class DiscardPile : MonoBehaviour
         {
             discardedCards[i].gameObject.SetActive(false);
         }
-    }
+    }   // Arrange the pile and turn off all cards.
 
     private void OnMouseDown()
     {

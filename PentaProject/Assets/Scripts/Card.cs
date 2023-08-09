@@ -53,7 +53,10 @@ public class Card : MonoBehaviour
             return;
         }
 
-        gm.PreviewCard(this);
+        if (player.canLook != 0)
+        {
+            gm.PreviewCard(this);
+        }
 
     }
 
